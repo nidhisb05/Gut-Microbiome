@@ -1,13 +1,13 @@
 # Gut-Microbiome
 Gut Microbiome repository for MAPS30550
 
-These changes need to be going back and forth and hopefully this works.
+These changes need to be going back and forth; hopefully, this works.
 
 It worked!
 
 Things to get done
 - Local R project by cloning a GitHub repo = done
-- Invite prof and TA as collatborators on repo = not yet
+- Invite prof and TA as collaborators on repo = done
 - Make +1 change to README = done
 - Revert a change = done
-- Create a GitHub issue = not yet
+- Create a GitHub issue = done
