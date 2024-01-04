@@ -1,8 +1,13 @@
 # Gut-Microbiome
 Gut Microbiome repository for MAPS30550
-I need to complete Assignment 1.1 and get a dataset confirmed.
 
-
-These changes need to be going back and forth and hopefully this works. Also need to invite the prof and TA as collaborators.
+These changes need to be going back and forth and hopefully this works.
 
 It worked!
+
+Things to get done
+- Local R project by cloning a GitHub repo = done
+- Invite prof and TA as collatborators on repo = not yet
+- Make +1 change to README = done
+- Revert a change = done
+- Create a GitHub issue = not yet
