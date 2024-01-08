@@ -1,8 +1,19 @@
 ## Loading tidyverse and papaja packages
+install.packages("tidyverse")
 library(tidyverse)
+
+install.packages("tinylabels")
+library(tinylabels)
+
+install.packages("tinytex")
+library(tinytex)
+
+install.packages("papaja")
 library(papaja)
 
 # Require other package
+install.packages("ggplot2")
+require("ggplot2")
 
 # Assigning numeric variables
 numeric_variable <- 25
