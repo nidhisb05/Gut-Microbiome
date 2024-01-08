@@ -11,7 +11,7 @@ library(tinytex)
 install.packages("papaja")
 library(papaja)
 
-# Require other package
+# Require other package, installed ggplot2
 install.packages("ggplot2")
 require("ggplot2")
 
@@ -29,5 +29,5 @@ print(string_variable)
 string_variable2 <- "sepsis data"
 print(string_variable2)
 
-string_variable3 <- "uploading, dataset"
+string_variable3 <- "uploaded dataset"
 print(string_variable3)
