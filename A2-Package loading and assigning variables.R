@@ -1,18 +1,11 @@
 ## Loading tidyverse and papaja packages
 options(repos = c(CRAN = "https://cran.rstudio.com"))
 library(tidyverse)
-
-install.packages("tinylabels")
 library(tinylabels)
-
-install.packages("tinytex")
 library(tinytex)
-
-install.packages("papaja")
 library(papaja)
 
 # Require other package, installed ggplot2
-install.packages("ggplot2")
 require("ggplot2")
 
 # Assigning numeric variables
