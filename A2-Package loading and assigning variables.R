@@ -1,5 +1,5 @@
 ## Loading tidyverse and papaja packages
-install.packages("tidyverse")
+options(repos = c(CRAN = "https://cran.rstudio.com"))
 library(tidyverse)
 
 install.packages("tinylabels")
