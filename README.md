@@ -1,13 +1,10 @@
 # Gut-Microbiome
-Gut Microbiome repository for MAPS30550
+Probiotic administration and anxiety under academic examination conditions repository for MAPS30550
 
-These changes need to be going back and forth; hopefully, this works.
+# Brief Descrption of Dataset
+The dataset displays the results from the Karbownik MS et al. (2020) study "Effects of Supplementation with Saccharomyces Boulardii on Academic Examination Performance and Related Stress in Healthy Medical Students: A Randomized, Double-Blind, Placebo-Controlled Trial." Whether an individual was in the probiotic group is indiciated with "S" and the placebo group is indicated with "P." The dataset includes a few demographic variables, stress-related variables such as anxiety and cortisol levels at rest and under stress, and pharmacology examination points pre- and post-examination.
 
-It worked!
+# Brief Overview of Planned Project
+The research question proposed is "whether administration of Saccharomyces Boulardii improves academic examination performance and lowers salivary-cortisol levels in healthy medical students." The hypothesis states that Saccharomyces Boulardii will improve academic examination scores and decrease salivary-cortisol levels.
 
-Complete for MAPS30500
-- Local R project by cloning a GitHub repo = done
-- Invite prof and TA as collaborators on repo = done
-- Make +1 change to README = done
-- Revert a change = done
-- Create a GitHub issue = done
+# Real or Hypothetical File Tree
