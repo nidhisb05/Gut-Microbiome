@@ -12,7 +12,7 @@ The research question proposed is "whether administration of Saccharomyces Boula
 # Trying out markdown elements - Header, Bold and Italics, and Strikethrough
 
 # Bold text in .Rmd under "## Participants"
-**Health Medical Students**
+**Healthy Medical Students**
 
 # Italicized text in .Rmd under "## Procedure"
 _Saccharomyces Boulardii_
