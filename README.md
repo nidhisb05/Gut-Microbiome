@@ -8,8 +8,20 @@ The dataset displays the results from the Karbownik MS et al. (2020) study "Effe
 The research question proposed is "whether administration of Saccharomyces Boulardii improves academic examination performance and lowers salivary-cortisol levels in healthy medical students." The hypothesis states that Saccharomyces Boulardii will improve academic examination scores and decrease salivary-cortisol levels.
 
 # Real or Hypothetical File Tree
+library(markdown)
+```markdown
+# Project File Tree
+- Project Root
+  - dataset/
+    - raw/
+    - processed/
 
-# Trying out markdown elements - Header, Bold and Italics, and Strikethrough
+# Markdown elements - Header, Bold and Italics, and Strikethrough
+
+# Number of "#" determines the level of header
+# Main Heading
+## Sub-Heading
+## Sub-Sub-Heading
 
 # Bold text in .Rmd under "## Participants"
 **Healthy Medical Students**
