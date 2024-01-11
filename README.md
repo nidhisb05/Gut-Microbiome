@@ -17,14 +17,15 @@ The research question proposed is "whether administration of Saccharomyces Boula
       - probioticsandanxiety_processed.csv
   - documentation/
     - finalreport.md
+    - citations.pdf
   - plots/
     - plot1.png
-  - .gitignore
   - README.md
+  - .gitignore
 
-# Markdown elements - Header, Bold and Italics, and Strikethrough
+# Markdown Elements - Header, Bold and Italics, and Strikethrough
 
-# Number of "#" determines the level of header
+## Number of "#" determines the level of header
 # Main Heading
 ## Sub-Heading
 ## Sub-Sub-Heading
