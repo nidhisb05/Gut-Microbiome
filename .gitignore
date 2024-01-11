@@ -51,8 +51,9 @@ rsconnect/
 #Including a directory called localonly
 localonly/
 
-#Files of specific types that can be on the computer but not uploaded to GitHub
+#Files of specific types that can be on the computer but not uploaded to GitHub 
+*.md
+*.exe
 
 #Specific file that is not in an ignored folder or ignored filetype
-
-
+!README.md
