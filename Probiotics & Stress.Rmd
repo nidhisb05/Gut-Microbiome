@@ -1,6 +1,6 @@
 ---
 title             : "Supplementation of Probiotics on Academic Examination Performance and Stress in Healthy Medical Students"
-shorttitle        : "Probitics Effect on Academic Performance and Stress in Medical Students"
+shorttitle        : "Probiotics Effect on Academic Performance and Stress in Medical Students"
 
 author: 
   - name          : "Nidhi Sheshachala"
@@ -61,6 +61,10 @@ output            : papaja::apa6_pdf
 ```{r setup, include = FALSE}
 library("papaja")
 source("A2-Package loading and assigning variables.R",local=knitr::knit_global())
+```
+
+```{r helloworld,include=TRUE}
+source("HelloWorld Function.R", local=knitr::knit_global())
 r_refs("r-references.bib")
 ```
 
@@ -70,11 +74,11 @@ set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
-# Main Heading
+# Introduction
 
-## Sub-Heading
+## Hypothesis
 
-### Sub-Sub-Heading
+### Definitions
 
 # Methods
 We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
@@ -83,10 +87,24 @@ We report how we determined our sample size, all data exclusions (if any), all m
 **Healthy Medical Students**
 
 ## Material
-salivary cortisol levels ~~in the body~~
+Probiotic used is _Saccharomyces Boulardii_
+
+<!-- Example of HTML-style comment -->
+
+[Visit RCT Study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7284642/)
 
 ## Procedure
-_Saccharomyces Boulardii_
+### Unordered List:
+- Measurement 1
+- Measurement 2
+- Measurement 3
+
+Measuring the salivary cortisol levels ~~in the body~~
+
+### Ordered List:
+1. Step 1
+2. Step 2
+3. Step 3
 
 ## Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
@@ -95,7 +113,6 @@ We used `r cite_r("r-references.bib")` for all our analyses.
 # Results
 
 # Discussion
-
 
 \newpage
 
