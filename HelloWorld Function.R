@@ -1,5 +1,4 @@
-#Defining a function for temperature check
-temperature_check <- function(temperature)
+#temperature_check <- function(temperature)
 
 #Defining degrees celsius, will be used in all conditional statements
 degree_celsius <- "\u00B0C"
