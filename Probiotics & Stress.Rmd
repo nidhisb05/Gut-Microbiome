@@ -65,13 +65,49 @@ source("A2-Package loading and assigning variables.R",local=knitr::knit_global()
 
 ```{r helloworld,include=TRUE}
 source("HelloWorld Function.R", local=knitr::knit_global())
-r_refs("r-references.bib")
 ```
 
 ```{r analysis-preferences}
 # Seed for random number generation
 set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+```{r read probioticsdata}
+
+# Load packages
+library(tidyverse)
+library(readxl)
+
+# Dataset Read-in
+read_excel("Probiotics-Academic-Stress.xlsx")
+
+# Naming Dataset
+probiotics_data <- read_excel("Probiotics-Academic-Stress.xlsx")
+
+# Data is tidy
+# Each column is a single variable
+# Each row is a single observation
+# Each cell is a single measurement
+# Need to remove individuals who dropped out of the dataset
+# Required variables: Participant code, Group enrolment, Drop-out, Sex, Age, STAI trait, Pharmacology examination (points, set, pre-examination test), Anxiety at rest and under stress, Salivary cortisol at rest and under stress, Pulse rate at rest and under stress, salivary 5-HT at rest and under stress.
+# Extraneous variables: Group follow-up and completed, Faculty, Nationality, BMI, EAT-26, BDI, and PSS-10
+```
+
+
+``` {r intermediate-probiotics-dataset}
+# Using dplyr functions - selecting, filtering, and arranging 
+# Displaying only the required variables
+im_probiotics_dataset <- probiotics_data |>
+  select(`Participant code`, `Group (enrolment)`, `Drop-out`, Sex, `Age [years]`, `STAI trait`, `Pharmacology examination points`, `Pharmacology examination set`, `Pharmacology pre-examination test`, `State anxiety "at rest"`, `State anxiety "under stress"`, `Salivary cortisol "at rest" [ng/ml]`, `Salivary cortisol "under stress" [ng/ml]`, `Pulse rate "at rest" [min-1]`, `Pulse rate "under stress" [min-1]`, `Salivary 5-HT "at rest" [ng/ml]`, `Salivary 5-HT "under stress" [ng/ml]`) |>
+  filter(`Drop-out`== 0) |> # Will remove the individuals with "1" indicating they dropped out
+  arrange(`Group (enrolment)`) |> # Arranging the dataset to show placebo group and then show Sacch. probiotics group
+  print(n=60) # Display all 60 observations
+
+# Exporting the created intermediate dataset
+# Load readr
+library(readr)
+write_csv(im_probiotics_dataset, file =  "im-probiotics-stress-dataset.csv")
 ```
 
 # Introduction
