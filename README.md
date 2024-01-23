@@ -37,4 +37,4 @@ The research question proposed is "whether administration of Saccharomyces Boula
 _Saccharomyces Boulardii_
 
 # Strikethrough text in .Rmd under "## Material"
-salivary cortisol levels ~~in the body~~
+salivary cortisol levels under stress ~~in the body~~
