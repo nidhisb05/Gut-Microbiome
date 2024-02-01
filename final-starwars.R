@@ -64,7 +64,7 @@ sw.wrangled <- starwars %>%
 
 # Plot 1 - height_cm and count
 library(tidyverse)
-ggplot(data = sw.wrangled) + geom_histogram(aes(x = height_cm), binwidth = 10) # This matches the example plot1 provided
+ggplot(data = sw.wrangled) + geom_histogram(aes(x = height_cm), binwidth = 10) # This binwidth matches the example plot1 image
 
 # Plot 2 - sorted_hair and count
 # Need to reorder the levels of hair based on count - largest to smallest
@@ -75,7 +75,7 @@ ggplot(data = sw.wrangled) + geom_bar(aes(x = hair))
 # Plot 3 - height_in and mass
 sw.wrangled %>%
   ggplot(aes(x = height_in, y = mass)) +
-  geom_point(sw.wrangled = subset(sw.wrangled, mass <= 160), shape = "triangle") +  # Exclude outlier
+  geom_point(sw.wrangled = subset(sw.wrangled, mass <= 160), shape = "triangle") +  # Exclude the outlier by indicating the y-axis limit
   coord_cartesian(xlim = c(25, 93), ylim = c(15, 160)) +  # Set the axis limits
   scale_x_continuous(breaks = seq(40, 80, by = 20)) +  # Set x-axis breaks
   scale_y_continuous(breaks = seq(40, 160, by = 40))  # Set y-axis breaks

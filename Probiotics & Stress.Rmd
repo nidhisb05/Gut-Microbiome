@@ -124,6 +124,23 @@ print(column_types)
 # Bar chart will not show individual variation - box/distribution plot may work better
 # Comparing pre-examination and examination for the two treatment groups
 # Hypothesis - Pre-examination scores for both groups will be similar, treatment with probiotic could result in better examination scores compared to the placebo group
+
+library(tidyverse)
+# Creates plot1 long data
+plot1_data <- gather(probiotics.stress.data, key = "Exam_score_type", value = "Score", `Exam score`, `Pre-examination score`)
+
+# Selecting the variables required for plot1
+plot1_columns <- plot1_data %>%
+  select(`Participant code`, `Group`, `Exam_score_type`, `Score`)
+
+# Re-order the exams so that pre-examination score is on the left side of the plot, and exam score is on the right side
+exam_order <- c("Pre-examination score", "Exam score")
+
+# Making a boxplot displaying the pre-examination and exam scores for the two different groups (placebo or probiotic)
+ggplot(data = plot1_columns) + 
+  geom_boxplot(aes(x = `Group`, y = `Score`, 
+                   fill = reorder(Exam_score_type, match (Exam_score_type, exam_order)))) + 
+  labs(fill = "Exam Type")
 ```
 
 ``` {r plot2-cortisol-and-pulserate}
