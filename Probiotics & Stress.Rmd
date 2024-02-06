@@ -139,17 +139,49 @@ exam_order <- c("Pre-examination score", "Exam score")
 # Making a boxplot displaying the pre-examination and exam scores for the two different groups (placebo or probiotic)
 ggplot(data = plot1_columns) + 
   geom_boxplot(aes(x = `Group`, y = `Score`, 
-                   fill = reorder(Exam_score_type, match (Exam_score_type, exam_order)))) + 
-  labs(fill = "Exam Type")
+                   fill = reorder(Exam_score_type, match(Exam_score_type, exam_order)))) + 
+  geom_jitter(aes(x = `Group`, y = `Score`,
+                  color = reorder(Exam_score_type, match(Exam_score_type, exam_order))), # Make sure jitter data points are associated with their respective groups
+              width = 0.1) + # Included jitter points to show each individual's exam score
+  labs(fill = "Exam Type",
+       color = "Exam Type") 
 ```
 
 ``` {r plot2-cortisol-and-pulserate}
-
 # Plot 2 will display the salivary cortisol levels vs. pulse rates - continuous variable against a continuous variable
 # X Axis = Salivary Cortisol levels, Y Axis = Pulse Rates
 # Displayed as a scatter plot with a smooth or dashed line to show the correlation
 # Will need to compare groups (use different symbols, colors, and lines) - at-rest and under-stress levels for both treatment groups (placebo or probiotic)
 # Hypothesis - Salivary cortisol levels will increase with an increase in pulse rate, treatment with probiotic could result in a lower salivary cortisol rate and have an effect on stress
+library(tidyverse)
+
+plot2_longdata <- probiotics.stress.data %>%
+  gather(key = "At Rest or Under Stress", value = "Cortisol",
+         `Salivary cortisol "at rest" [ng/ml]`, `Salivary cortisol "under stress" [ng/ml]`) %>%
+  gather(key = "At Rest or Under Stress", value = "Pulse Rate",
+         `Pulse rate "at rest" [min-1]`, `Pulse rate "under stress" [min-1]`)
+
+plot2_columns <- plot2_longdata %>%
+  select('Participant code', 'Group', 'Cortisol', 'At Rest or Under Stress', 'Pulse Rate') %>%
+  mutate(`At Rest or Under Stress` = gsub("Pulse rate \"at rest\" \\[min-1\\]", "At rest", `At Rest or Under Stress`)) %>%
+  mutate(`At Rest or Under Stress` = gsub("Pulse rate \"under stress\" \\[min-1\\]", "Under stress", `At Rest or Under Stress`)) %>%
+  mutate('Group' = replace(`Group`, `Group` == "Saccharomyces Boulardii (Probiotic)", "Probiotic"))
+
+plot2_columns %>%
+  filter(!(Cortisol > 10)) %>%
+  ggplot(aes(x = `Cortisol`, y = `Pulse Rate`, shape = `Group`, color = `At Rest or Under Stress`)) +
+  geom_point() +
+  coord_cartesian(xlim = c(0, 10), ylim = c(40, 140)) +
+  geom_smooth(
+    aes(group = ifelse(`At Rest or Under Stress` == "At Rest", 1, 2)),
+    method = "lm",
+    se = FALSE) +
+  labs(title = "Cortisol vs Pulse Rate at rest and under stress",
+      subtitle = "by Placebo and Probiotic groups",
+      x = "Cortisol [ng/mL]",
+      y = "Pulse Rate [min-1]") +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "white"))
 ```
 
 ``` {r mockup-plot1and2}

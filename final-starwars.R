@@ -79,3 +79,62 @@ sw.wrangled %>%
   coord_cartesian(xlim = c(25, 93), ylim = c(15, 160)) +  # Set the axis limits
   scale_x_continuous(breaks = seq(40, 80, by = 20)) +  # Set x-axis breaks
   scale_y_continuous(breaks = seq(40, 160, by = 40))  # Set y-axis breaks
+
+
+
+# Assignment 12
+# Plot 1 - sorted_hair and count in boxplot with diff colors
+library(tidyverse)
+sw.wrangled$hair <- factor(sw.wrangled$hair, levels = names(sort(table(sw.wrangled$hair), decreasing = TRUE)))
+
+sw.wrangled %>%
+  ggplot(aes(x = hair, y = mass, fill = hair)) +
+  geom_boxplot(sw.wrangled = subset(sw.wrangled, mass <= 160)) +
+  coord_cartesian(ylim = c(15,160)) +
+  scale_y_continuous(breaks = seq(40,160, by = 40)) +
+  geom_point(aes(x = hair, y = mass)) +
+  labs(x = "Hair color(s)",
+       y = "Mass (kg)",
+       fill = "Colorful Hair") + # Change legend title
+  guides(fill = guide_legend(override.aes = list(shape = NA))) 
+
+
+# Plot 2 - mass vs. height by brown-hair-havingness
+library(tidyverse)
+sw.wrangled$brown_hair <- factor(sw.wrangled$brown_hair, levels = c(TRUE, FALSE))
+  
+sw.wrangled %>%
+  filter(!(mass > 1000)) %>% # To remove the outlier
+  arrange(brown_hair) %>%
+  ggplot(aes(x = `mass`, y = `height_in`)) +
+  geom_point() +
+  coord_cartesian(xlim = c(-200,200), ylim = c(-4,150)) + # Setting the axes
+  facet_wrap(~ brown_hair, labeller = labeller(brown_hair = c('TRUE' = "Has brown hair", 'FALSE' = "No brown hair"))) + # Display the brown hair and no brown hair data side by side
+  geom_smooth(method = "lm") + # Using the formula 'y ~ x' to calculate a line of best fit
+  scale_y_continuous(breaks = c(-4,20,23, 80, 100)) + # Choosing the accurate axis breaks
+  labs(title = "Mass vs. Height by Brown-Hair-Havingness",
+        subtitle = "A critically important analysis",
+        x = "mass",
+        y = "height_in")
+
+
+# Plot 3 - stacked bar graph based on species count of first alphabet
+library(tidyverse)
+sw.wrangled.plot3 <- sw.wrangled %>%
+  filter(!is.na(gender)) %>%
+  mutate(species_firstchar = substr(species, 1, 1)) %>%
+  group_by(gender, species_firstchar) %>%
+  summarise(Count = n())
+
+sw.wrangled.plot3 %>%
+  ggplot(aes(x = Count, y = species_firstchar, fill = gender)) +
+  geom_col(position = "stack") +
+  theme(panel.background = element_rect(fill = "white", color = "white"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(color = "black")) + # To set the background as white, remove any grid lines, and make sure axis is black
+  labs(x = "count",
+       y = "species_first_letter",
+       caption = "A clear male human bias") +
+  scale_fill_manual(values = c("m" = "#54B6BC", "f" = "#E0796F")) +
+  scale_y_discrete(limits = rev(levels(factor(sw.wrangled.plot3$species_firstchar))))
