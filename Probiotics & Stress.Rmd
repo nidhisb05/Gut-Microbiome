@@ -138,13 +138,26 @@ exam_order <- c("Pre-examination score", "Exam score")
 
 # Making a boxplot displaying the pre-examination and exam scores for the two different groups (placebo or probiotic)
 ggplot(data = plot1_columns) + 
-  geom_boxplot(aes(x = `Group`, y = `Score`, 
-                   fill = reorder(Exam_score_type, match(Exam_score_type, exam_order)))) + 
+  geom_boxplot(aes(x = `Group`, y = `Score`,  
+                   fill = reorder(Exam_score_type, match(Exam_score_type, exam_order)))) +
   geom_jitter(aes(x = `Group`, y = `Score`,
-                  color = reorder(Exam_score_type, match(Exam_score_type, exam_order))), # Make sure jitter data points are associated with their respective groups
-              width = 0.1) + # Included jitter points to show each individual's exam score
-  labs(fill = "Exam Type",
-       color = "Exam Type") 
+                  color = reorder(Exam_score_type, match(Exam_score_type, exam_order))), # Make sure jitter data points are associated with their respective groups - pre-exam and exam
+              width = 0.1) +
+  labs(title = "Pre-examination and Exam scores for the Placebo and Probiotic Groups",
+       x = "Group",
+       y = "Score",
+       color = "Exam Type",
+       fill = "Exam Type") +
+theme(
+  plot.title = element_text(family = "Arial", size = 12),
+  plot.subtitle = element_text(family = "Arial", size = 10),
+  axis.title = element_text(family = "Arial", size = 10),
+  legend.background = element_rect(color = "black", fill = "white"),
+  legend.text = element_text(family = "Arial", size = 8),
+  legend.title = element_text(family = "Arial", size = 10),
+  strip.text = element_text(family = "Arial", size = 8, color = "white"),
+  panel.border = element_rect(color = "black", fill = NA),
+  legend.key = element_rect(fill = 'white'))
 ```
 
 ``` {r plot2-cortisol-and-pulserate}
@@ -154,7 +167,6 @@ ggplot(data = plot1_columns) +
 # Will need to compare groups (use different symbols, colors, and lines) - at-rest and under-stress levels for both treatment groups (placebo or probiotic)
 # Hypothesis - Salivary cortisol levels will increase with an increase in pulse rate, treatment with probiotic could result in a lower salivary cortisol rate and have an effect on stress
 library(tidyverse)
-
 plot2_longdata <- probiotics.stress.data %>%
   gather(key = "At Rest or Under Stress", value = "Cortisol",
          `Salivary cortisol "at rest" [ng/ml]`, `Salivary cortisol "under stress" [ng/ml]`) %>%
@@ -163,25 +175,35 @@ plot2_longdata <- probiotics.stress.data %>%
 
 plot2_columns <- plot2_longdata %>%
   select('Participant code', 'Group', 'Cortisol', 'At Rest or Under Stress', 'Pulse Rate') %>%
-  mutate(`At Rest or Under Stress` = gsub("Pulse rate \"at rest\" \\[min-1\\]", "At rest", `At Rest or Under Stress`)) %>%
-  mutate(`At Rest or Under Stress` = gsub("Pulse rate \"under stress\" \\[min-1\\]", "Under stress", `At Rest or Under Stress`)) %>%
+  mutate(`At Rest or Under Stress` = gsub("Pulse rate \"at rest\" \\[min-1\\]", "At Rest", `At Rest or Under Stress`)) %>%
+  mutate(`At Rest or Under Stress` = gsub("Pulse rate \"under stress\" \\[min-1\\]", "Under Stress", `At Rest or Under Stress`)) %>%
   mutate('Group' = replace(`Group`, `Group` == "Saccharomyces Boulardii (Probiotic)", "Probiotic"))
 
 plot2_columns %>%
-  filter(!(Cortisol > 10)) %>%
-  ggplot(aes(x = `Cortisol`, y = `Pulse Rate`, shape = `Group`, color = `At Rest or Under Stress`)) +
+  filter(!(Cortisol > 15)) %>%
+  ggplot(aes(x = `Cortisol`, y = `Pulse Rate`, shape = `Group`, color = `Group`)) +
   geom_point() +
-  coord_cartesian(xlim = c(0, 10), ylim = c(40, 140)) +
-  geom_smooth(
-    aes(group = ifelse(`At Rest or Under Stress` == "At Rest", 1, 2)),
-    method = "lm",
-    se = FALSE) +
-  labs(title = "Cortisol vs Pulse Rate at rest and under stress",
-      subtitle = "by Placebo and Probiotic groups",
+  scale_color_manual(values=c("#469B79", "#5D33A7")) +
+  coord_cartesian(xlim = c(0,15), ylim = c(40,130)) +
+  facet_wrap(~ `At Rest or Under Stress`) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Salivary Cortisol vs. Pulse Rate of Health Medical Students",
+      subtitle = "At Rest and Under Stress Changes in the Placebo and Probiotic Groups",
       x = "Cortisol [ng/mL]",
       y = "Pulse Rate [min-1]") +
-  theme_minimal() +
-  theme(panel.background = element_rect(fill = "white"))
+  theme(
+    plot.title = element_text(family = "Arial", size = 12),
+    plot.subtitle = element_text(family = "Arial", size = 10),
+    axis.title = element_text(family = "Arial", size = 10),
+    legend.background = element_rect(color = "black", fill = "white"),
+    legend.text = element_text(family = "Arial", size = 10),
+    legend.title = element_text(family = "Arial", size = 12),
+    strip.background = element_rect(fill = "#872E51"),
+    strip.text = element_text(family = "Arial", size = 8, color = "white"),
+    panel.border = element_rect(color = "black", fill = NA),
+    legend.key = element_rect(fill = 'white'),
+    axis.text.x = element_text(family = "Arial", size = 8),
+    axis.text.y = element_text(family = "Arial", size = 8))
 ```
 
 ``` {r mockup-plot1and2}

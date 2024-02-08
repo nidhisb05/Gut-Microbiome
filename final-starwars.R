@@ -138,3 +138,50 @@ sw.wrangled.plot3 %>%
        caption = "A clear male human bias") +
   scale_fill_manual(values = c("m" = "#54B6BC", "f" = "#E0796F")) +
   scale_y_discrete(limits = rev(levels(factor(sw.wrangled.plot3$species_firstchar))))
+
+# Assignment 13
+# Plot - Mass and weight across gender presentation
+library(tidyverse)
+
+sw.facet_data <- sw.wrangled %>%
+  mutate(gender = ifelse(is.na(gender), "Other", gender)) %>%
+  filter(!is.na(mass)) %>%
+  mutate(`gender` = replace(`gender`, `gender` == "m", "Male")) %>%
+  mutate(`gender` = replace(`gender`, `gender` == "f", "Female")) %>%
+  mutate(`gender` = replace(`gender`, `gender` == "other", "Other")) %>%
+  select(`height_cm`, `mass`, `gender`)
+
+gender_colors <- c("Female" = "#75150C", "Male" = "#767575", "Other" = "#F1A841")
+
+sw.facet_data %>%
+  ggplot(aes(x = height_cm, y = mass, color = gender, se=TRUE)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, fill = "#CCCCFC") + 
+  facet_wrap( ~ gender, scales = "free_y") +
+  labs(title = "Height and weight across gender presentation",
+       subtitle = "A cautionary tale in misleading \"free\" axis scales & bad design choices",
+       x = "Height (cm)",
+       y = "Mass (kg)",
+       color = "Gender Presentation") +
+  scale_x_continuous(breaks = seq(60, 270, by = 30)) +
+  scale_color_manual(values = gender_colors) + 
+  theme(
+    plot.title = element_text(family = "Comic Sans MS", size = 12),
+    plot.subtitle = element_text(family = "Comic Sans MS"),
+    axis.title = element_text(family = "Comic Sans MS", size = 10),
+    legend.position = "bottom",
+    legend.background = element_rect(fill = "#C5C6FD"),
+    legend.text = element_text(family = "Comic Sans MS", size = 8),
+    legend.title = element_text(family = "Brush Script MT", size = 14),
+    strip.background = element_rect(fill = "#2C580D"),
+    strip.text = element_text(family = "Courier New", size = 10, color = "white", hjust = 0),
+    panel.background = element_rect(fill = "#FAECEC"),
+    panel.border = element_rect(color = "black", fill = NA),
+    panel.grid.major.y = element_line(linetype = "dotdash", color = "#CDCDCD"),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_line(linetype = "dashed"),
+    panel.grid.minor.x = element_blank(),
+    legend.key = element_rect(fill = 'white'),
+    axis.text.x = element_text(angle = 45, hjust = 1, family = "Comic Sans MS", size = 8),
+    axis.text.y = element_text(face = "italic", family = "Comic Sans MS", size = 8)
+  )
