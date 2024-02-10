@@ -102,15 +102,27 @@ read_excel("Probiotics-Academic-Stress.xlsx")
 
 # Name the dataset
 probiotics.dataset <- read_excel("Probiotics-Academic-Stress.xlsx")
+colnames(probiotics.dataset) <- tolower(colnames(probiotics.dataset)) # Change all column names to lowercase
 
 # Use dplyr functions to further select, filter and arrange dataset
 # Display only the variables required
 probiotics.stress.data <- probiotics.dataset |>
-  filter(`Drop-out`== 0) |>
-  mutate(`Group (enrolment)`= recode(`Group (enrolment)`, "P" = "Placebo", "S" = "Saccharomyces Boulardii (Probiotic)")) |>
-  select(`Participant code`, `Group (enrolment)`, Sex, `Age [years]`, `PSS-10`, `STAI trait`, `Pharmacology examination points`, `Pharmacology examination set`, `Pharmacology pre-examination test`, `State anxiety "at rest"`, `State anxiety "under stress"`, `Salivary cortisol "at rest" [ng/ml]`, `Salivary cortisol "under stress" [ng/ml]`, `Pulse rate "at rest" [min-1]`, `Pulse rate "under stress" [min-1]`) |>
-  rename("Perceived Stress Scale" = "PSS-10", "State-Trait Anxiety Inventory" = "STAI trait", "Age" = "Age [years]") |>
-  arrange(`Group (enrolment)`, `Participant code`)
+  filter(`drop-out`== 0) |>
+  rename(
+    "group" = "group (enrolment)",
+    "age" = "age [years]",
+    "exam score" = "pharmacology examination points",
+    "exam set" = "pharmacology examination set",
+    "pre-exam score" = "pharmacology pre-examination test",
+    "anxiety at rest" = "state anxiety \"at rest\"",
+    "anxiety under stress" = "state anxiety \"under stress\"",
+  "cortisol at rest" = "salivary cortisol \"at rest\" [ng/ml]",
+  "cortisol under stress" = "salivary cortisol \"under stress\" [ng/ml]",
+  "pulse rate at rest" = "pulse rate \"at rest\" [min-1]",
+  "pulse rate under stress" = "pulse rate \"under stress\" [min-1]") |>
+  mutate(`group`= recode(`group`, "P" = "placebo", "S" = "saccharomyces boulardii (probiotic)")) |>
+  select(`participant code`, `group`, sex, `age`, `pss-10`, `stai trait`, `exam score`, `exam set`, `pre-exam score`, `anxiety at rest`, `anxiety under stress`, `cortisol at rest`, `cortisol under stress`, `pulse rate at rest`, `pulse rate under stress`) |>
+  arrange(`group`, `participant code`)
 
 # Check the data types for each column
 column_types <- sapply(probiotics.stress.data, class)
