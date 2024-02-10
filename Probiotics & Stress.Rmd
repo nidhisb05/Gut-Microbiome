@@ -148,6 +148,7 @@ ggplot(data = plot1_columns) +
        y = "Score",
        color = "Exam Type",
        fill = "Exam Type") +
+  theme_bw() +
 theme(
   plot.title = element_text(family = "Arial", size = 12),
   plot.subtitle = element_text(family = "Arial", size = 10),
