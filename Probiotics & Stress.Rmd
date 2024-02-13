@@ -73,29 +73,9 @@ set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
-```{r read probioticsdata}
 
-# Load packages
-library(tidyverse)
-library(readxl)
+```{r final-dataset}
 
-# Dataset Read-in
-read_excel("Probiotics-Academic-Stress.xlsx")
-
-# Naming Dataset
-probiotics_data <- read_excel("Probiotics-Academic-Stress.xlsx")
-
-# Data is tidy
-# Each column is a single variable
-# Each row is a single observation
-# Each cell is a single measurement
-# Need to remove individuals who dropped out of the dataset
-# Required variables: Participant code, Group enrolment, Drop-out, Sex, Age, STAI trait, Pharmacology examination (points, set, pre-examination test), Anxiety at rest and under stress, Salivary cortisol at rest and under stress, Pulse rate at rest and under stress, salivary 5-HT at rest and under stress.
-# Extraneous variables: Group follow-up and completed, Faculty, Nationality, BMI, EAT-26, BDI, and PSS-10
-```
-
-``` {r final-dataset}
-# Dataset read-in - install and load required packages (tidyverse and readxl)
 library(tidyverse)
 library(readxl)
 read_excel("Probiotics-Academic-Stress.xlsx")
@@ -106,8 +86,8 @@ colnames(probiotics.dataset) <- tolower(colnames(probiotics.dataset)) # Change a
 
 # Use dplyr functions to further select, filter and arrange dataset
 # Display only the variables required
-probiotics.stress.data <- probiotics.dataset |>
-  filter(`drop-out`== 0) |>
+probiotics.stress.data <- probiotics.dataset %>%
+  filter(`drop-out`== 0) %>%
   rename(
     "group" = "group (enrolment)",
     "age" = "age [years]",
@@ -116,107 +96,148 @@ probiotics.stress.data <- probiotics.dataset |>
     "pre-exam score" = "pharmacology pre-examination test",
     "anxiety at rest" = "state anxiety \"at rest\"",
     "anxiety under stress" = "state anxiety \"under stress\"",
-  "cortisol at rest" = "salivary cortisol \"at rest\" [ng/ml]",
-  "cortisol under stress" = "salivary cortisol \"under stress\" [ng/ml]",
-  "pulse rate at rest" = "pulse rate \"at rest\" [min-1]",
-  "pulse rate under stress" = "pulse rate \"under stress\" [min-1]") |>
-  mutate(`group`= recode(`group`, "P" = "placebo", "S" = "saccharomyces boulardii (probiotic)")) |>
-  select(`participant code`, `group`, sex, `age`, `pss-10`, `stai trait`, `exam score`, `exam set`, `pre-exam score`, `anxiety at rest`, `anxiety under stress`, `cortisol at rest`, `cortisol under stress`, `pulse rate at rest`, `pulse rate under stress`) |>
+    "cortisol at rest" = "salivary cortisol \"at rest\" [ng/ml]",
+    "cortisol under stress" = "salivary cortisol \"under stress\" [ng/ml]",
+    "pulse rate at rest" = "pulse rate \"at rest\" [min-1]",
+    "pulse rate under stress" = "pulse rate \"under stress\" [min-1]") %>%
+  mutate(`group`= recode(`group`, "P" = "placebo", "S" = "saccharomyces boulardii (probiotic)")) %>%
+  select(`participant code`, `group`, sex, `age`, `pss-10`, `stai trait`, `exam score`, `exam set`, `pre-exam score`, `anxiety at rest`, `anxiety under stress`, `cortisol at rest`, `cortisol under stress`, `pulse rate at rest`, `pulse rate under stress`) %>%
   arrange(`group`, `participant code`)
-
-# Check the data types for each column
-column_types <- sapply(probiotics.stress.data, class)
-print(column_types)
 ```
 
-``` {r plot1-examscores}
-# Plot 1 will display the pre-examination and examination scores for participants in both groups
-# X Axis = Placebo or Probiotic, Y Axis = Score
-# Displayed as either a box/distribution plot OR a bar chart
-# Bar chart will not show individual variation - box/distribution plot may work better
-# Comparing pre-examination and examination for the two treatment groups
-# Hypothesis - Pre-examination scores for both groups will be similar, treatment with probiotic could result in better examination scores compared to the placebo group
+
+``` {r plot1-pre-and-exam-scores, fig.cap="Pre-Exam and Exam Scores with Placebo or Probiotic Treatment"}
+
+  # Plot 1 will display the pre-examination and examination scores for participants in both groups
+  # X Axis = Placebo or Probiotic, Y Axis = Score
+  # Displayed as either a box/distribution plot OR a bar chart
+  # Bar chart will not show individual variation - box/distribution plot may work better
+  # Comparing pre-examination and examination for the two treatment groups
+  # Hypothesis - Pre-examination scores for both groups will be similar, treatment with probiotic could result in better examination scores compared to the placebo group
 
 library(tidyverse)
 # Creates plot1 long data
-plot1_data <- gather(probiotics.stress.data, key = "Exam_score_type", value = "Score", `Exam score`, `Pre-examination score`)
+plot1_data <- gather(probiotics.stress.data, key = "exam_score_type", value = "score", `exam score`, `pre-exam score`)
 
 # Selecting the variables required for plot1
 plot1_columns <- plot1_data %>%
-  select(`Participant code`, `Group`, `Exam_score_type`, `Score`)
+  arrange(desc(exam_score_type)) %>%
+  mutate(`exam_score_type` = replace(`exam_score_type`, `exam_score_type` == "pre-exam score", "Pre-exam Score")) %>%
+  mutate(`exam_score_type` = replace(`exam_score_type`, `exam_score_type` == "exam score", "Exam Score")) %>%
+  mutate(`group` = replace(`group`, `group` == "placebo", "Placebo")) %>%
+  mutate(`group` = replace(`group`, `group` == "saccharomyces boulardii (probiotic)", "Saccharomyces boulardii (Probiotic)")) %>%
+  select(`participant code`, `group`, `exam_score_type`, `score`)
 
 # Re-order the exams so that pre-examination score is on the left side of the plot, and exam score is on the right side
-exam_order <- c("Pre-examination score", "Exam score")
+exam_order <- c("Pre-exam Score", "Exam Score")
 
 # Making a boxplot displaying the pre-examination and exam scores for the two different groups (placebo or probiotic)
-ggplot(data = plot1_columns) + 
-  geom_boxplot(aes(x = `Group`, y = `Score`,  
-                   fill = reorder(Exam_score_type, match(Exam_score_type, exam_order)))) +
-  geom_jitter(aes(x = `Group`, y = `Score`,
-                  color = reorder(Exam_score_type, match(Exam_score_type, exam_order))), # Make sure jitter data points are associated with their respective groups - pre-exam and exam
-              width = 0.1) +
+plot1_columns %>%
+  ggplot(aes(x = `group`, y = `score`,  
+             fill = `group`)) + 
+  geom_boxplot() +
+  scale_fill_manual(values = c("Placebo" = "#489E7C", "Saccharomyces boulardii (Probiotic)" = "#264185")) +
+  scale_color_manual(values = c("Placebo" = "#489E7C", "Saccharomyces boulardii (Probiotic)" = "#264185")) +
+  facet_wrap((~factor(exam_score_type, levels = exam_order)), ncol = 2) +
+  geom_point(aes(color = `group`), alpha = 0.8, position = position_jitterdodge()) + # Make sure jitter data points are associated with their respective groups - pre-exam and exam
   labs(title = "Pre-examination and Exam scores for the Placebo and Probiotic Groups",
-       x = "Group",
+       x = "",
        y = "Score",
-       color = "Exam Type",
-       fill = "Exam Type") +
+       color = "Group",
+       fill = "Group") +
   theme_bw() +
-theme(
-  plot.title = element_text(family = "Arial", size = 12),
-  plot.subtitle = element_text(family = "Arial", size = 10),
-  axis.title = element_text(family = "Arial", size = 10),
-  legend.background = element_rect(color = "black", fill = "white"),
-  legend.text = element_text(family = "Arial", size = 8),
-  legend.title = element_text(family = "Arial", size = 10),
-  strip.text = element_text(family = "Arial", size = 8, color = "white"),
-  panel.border = element_rect(color = "black", fill = NA),
-  legend.key = element_rect(fill = 'white'))
+  theme(
+    plot.title = element_text(size = 12),
+    plot.subtitle = element_text(size = 10),
+    axis.title = element_text(size = 10),
+    axis.text.x = element_blank(),
+    legend.background = element_rect(color = "black", fill = "white"),
+    legend.position = "bottom",
+    legend.text = element_text(size = 9),
+    legend.title = element_text(face = "bold", size = 10),
+    strip.text = element_text(face = "bold", size = 8, color = "black"),
+    panel.border = element_rect(color = "black", fill = NA),
+    legend.key = element_rect(fill = 'white'))
 ```
 
-``` {r plot2-cortisol-and-pulserate}
+
+``` {r plot2-cortisol-and-pulserate, fig.cap="Cortisol and Pulse Rate Changes At Rest and Under Stress with Placebo or Probiotic Treatment."}
 # Plot 2 will display the salivary cortisol levels vs. pulse rates - continuous variable against a continuous variable
 # X Axis = Salivary Cortisol levels, Y Axis = Pulse Rates
 # Displayed as a scatter plot with a smooth or dashed line to show the correlation
 # Will need to compare groups (use different symbols, colors, and lines) - at-rest and under-stress levels for both treatment groups (placebo or probiotic)
 # Hypothesis - Salivary cortisol levels will increase with an increase in pulse rate, treatment with probiotic could result in a lower salivary cortisol rate and have an effect on stress
+
 library(tidyverse)
 plot2_longdata <- probiotics.stress.data %>%
-  gather(key = "At Rest or Under Stress", value = "Cortisol",
-         `Salivary cortisol "at rest" [ng/ml]`, `Salivary cortisol "under stress" [ng/ml]`) %>%
-  gather(key = "At Rest or Under Stress", value = "Pulse Rate",
-         `Pulse rate "at rest" [min-1]`, `Pulse rate "under stress" [min-1]`)
-
+  gather(key = "at rest or under stress", value = "cortisol",
+           `cortisol at rest`, `cortisol under stress`) %>%
+  gather(key = "at rest or under stress", value = "pulse rate",
+       `pulse rate at rest`, `pulse rate under stress`)
+        
 plot2_columns <- plot2_longdata %>%
-  select('Participant code', 'Group', 'Cortisol', 'At Rest or Under Stress', 'Pulse Rate') %>%
-  mutate(`At Rest or Under Stress` = gsub("Pulse rate \"at rest\" \\[min-1\\]", "At Rest", `At Rest or Under Stress`)) %>%
-  mutate(`At Rest or Under Stress` = gsub("Pulse rate \"under stress\" \\[min-1\\]", "Under Stress", `At Rest or Under Stress`)) %>%
-  mutate('Group' = replace(`Group`, `Group` == "Saccharomyces Boulardii (Probiotic)", "Probiotic"))
-
+  select('participant code', 'group', 'cortisol', 'at rest or under stress', 'pulse rate') %>%
+  mutate(`group` = replace(`group`, `group` == "placebo", "Placebo")) %>%
+  mutate(`group` = replace(`group`, `group` == "saccharomyces boulardii (probiotic)", "Saccharomyces boulardii (Probiotic)")) %>%
+  mutate(`at rest or under stress` = gsub("pulse rate at rest", "at rest", `at rest or under stress`)) %>%
+  mutate(`at rest or under stress` = gsub("pulse rate under stress", "under stress", `at rest or under stress`))
+  
 plot2_columns %>%
-  filter(!(Cortisol > 15)) %>%
-  ggplot(aes(x = `Cortisol`, y = `Pulse Rate`, shape = `Group`, color = `Group`)) +
+  filter(!(cortisol > 7.5)) %>%
+  ggplot(aes(x = `cortisol`, y = `pulse rate`, shape = `group`, color = `group`)) +
   geom_point() +
   scale_color_manual(values=c("#469B79", "#5D33A7")) +
-  coord_cartesian(xlim = c(0,15), ylim = c(40,130)) +
-  facet_wrap(~ `At Rest or Under Stress`) +
+  coord_cartesian(xlim = c(0,7.5), ylim = c(40,130)) +
+  facet_wrap(~ `at rest or under stress`) +
   geom_smooth(method = "lm", se = FALSE) +
-  labs(title = "Salivary Cortisol vs. Pulse Rate of Health Medical Students",
+  labs(title = "Salivary Cortisol vs. Pulse Rate of Healthy Medical Students",
       subtitle = "At Rest and Under Stress Changes in the Placebo and Probiotic Groups",
-      x = "Cortisol [ng/mL]",
-      y = "Pulse Rate [min-1]") +
+      x = "Salivary Cortisol [ng/mL]",
+      y = "Pulse Rate [min-1]",
+      shape = "Group",
+      color = "Group") +
+  theme_bw() +
   theme(
-    plot.title = element_text(family = "Arial", size = 12),
-    plot.subtitle = element_text(family = "Arial", size = 10),
-    axis.title = element_text(family = "Arial", size = 10),
+    plot.title = element_text(size = 12),
+    plot.subtitle = element_text(size = 10),
+    axis.title = element_text(size = 10),
     legend.background = element_rect(color = "black", fill = "white"),
-    legend.text = element_text(family = "Arial", size = 10),
-    legend.title = element_text(family = "Arial", size = 12),
+    legend.text = element_text(size = 10),
+    legend.title = element_text(size = 12),
     strip.background = element_rect(fill = "#872E51"),
-    strip.text = element_text(family = "Arial", size = 8, color = "white"),
+    strip.text = element_text(size = 8, color = "white"),
     panel.border = element_rect(color = "black", fill = NA),
     legend.key = element_rect(fill = 'white'),
-    axis.text.x = element_text(family = "Arial", size = 8),
-    axis.text.y = element_text(family = "Arial", size = 8))
+    axis.text.x = element_text(size = 8),
+    axis.text.y = element_text(size = 8))
+```
+
+
+``` {r table1-summary-and-mean-values, table.cap="Summary of Mean Academic Performance and Stress Variable Changes At Rest or Under Stress with Placebo or Probiotic Treatment"}
+
+# Install and load packages
+library(knitr)
+library(kableExtra)
+
+# Create dataset to convert into a table
+table_columns <- probiotics.stress.data[, c("participant code", "group", "anxiety at rest", "anxiety under stress", "pre-exam score", "exam score", "cortisol at rest", "cortisol under stress", "pulse rate at rest", "pulse rate under stress")]
+
+# Created table summarizing mean values of all academic performance and stress variables
+# Style modifications: bold caption, bold headers, center-aligned all values, and changed the font
+table_columns %>%
+  group_by(group) %>% # Was unable to bold the "group" column, will need to modify the dataset
+  summarize("Mean Anxiety At Rest" = mean(`anxiety at rest`),
+            "Mean Anxiety Under Stress" = mean(`anxiety under stress`),
+            "Mean Pre-Exam Score" = mean(`pre-exam score`),
+            "Mean Exam Score" = mean(`exam score`),
+            "Mean Cortisol At Rest" = mean(`cortisol at rest`),
+            "Mean Coritsol Under Stress" = mean(`cortisol under stress`),
+            "Mean Pulse Rate At Rest" = mean(`pulse rate at rest`),
+            "Mean Pulse Rate Under Stress" = mean(`pulse rate under stress`)) %>%
+  kbl(caption = "<b>At Rest and Under Stress Mean Values for Academic Performance and Stress Variables with Placebo or Probiotic Treatment</b>", align = "c") %>%
+  kable_styling(full_width = FALSE, font_size = 14) %>% 
+  kable_classic(full_width = F, html_font = "Times New Roman") %>%
+  row_spec(0, bold = TRUE)
 ```
 
 ``` {r mockup-plot1and2}
@@ -224,7 +245,54 @@ plot2_columns %>%
 # Need figure out which style of plot to use and make sure all the axes have proper descriptions/measures
 knitr::include_graphics("Probiotics-Stress-Plots.jpg")
 ```
+
+
+<!-- 2 analyses
+
+Descriptive Analysis
+
+Placebo and Probiotic Treatment Groups At Rest and Under Stress
+Independent Variables: Cortisol Levels
+Dependent Variables: Pulse Rate
+
+Hypothesized Results
+- As cortisol levels increase under stress the pulse rates will also increase.
+- Lower cortisol levels at rest will also indicate lower pulse rates.
+- Probiotic administration could lower cortisol levels under stress, which can decrease pulse rate levels.
+
+Appropriate Tests:
+Correlation analysis with line of best fit
+  - Examine the relationship between cortisol levels and pulse rate at rest and under stress within each           treatment group.
+
+
+
+Hypothesis Testing Analysis
+
+Null Hypothesis: There is no difference in cortisol levels or exam scores between participants 
+consuming placebo or probiotics.
+
+Alternative Hypothesis: There is a decrease in cortisol levels and increase in exam scores when participants consume probiotics.
+
+Indepdent Variables: Cortisol Levels or Exam Scores
+Dependent Variables: Group (Placebo or Probiotic)
+
+Hypothesized Results:
+- Null: There is no difference in stress levels under stress between the two groups.
+- Alternative: Probiotic consumption decreased stress levels in the under stress condition.
+
+Appropriate Tests:
+t-test
+  - Compare the stress levels at rest and under stress for both treatment groups and see if there are any 
+    changes.
+-->
+
+
 # Introduction
+As seen in Figure\ \@ref(fig:plot1-pre-and-exam-scores) the pre-exam and exam scores for individuals consuming placebo or probiotics.
+
+As seen in Figure\ \@ref(fig:plot2-cortisol-and-pulserate) the cortisol levels and pulse rates at rest and under stress for the placebo or probiotic groups.
+
+As seen in Table\ \@ref(tab:table1-summary-and-mean-values) the summary mean values of academic performance and stress variables for both placebo and probiotic treatment groups.
 
 ## Hypothesis
 
