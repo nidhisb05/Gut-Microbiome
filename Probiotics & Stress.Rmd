@@ -103,6 +103,8 @@ probiotics.stress.data <- probiotics.dataset %>%
   mutate(`group`= recode(`group`, "P" = "placebo", "S" = "saccharomyces boulardii (probiotic)")) %>%
   select(`participant code`, `group`, sex, `age`, `pss-10`, `stai trait`, `exam score`, `exam set`, `pre-exam score`, `anxiety at rest`, `anxiety under stress`, `cortisol at rest`, `cortisol under stress`, `pulse rate at rest`, `pulse rate under stress`) %>%
   arrange(`group`, `participant code`)
+
+print(probiotics.stress.data)
 ```
 
 
@@ -235,10 +237,65 @@ table_columns %>%
             "Mean Pulse Rate At Rest" = mean(`pulse rate at rest`),
             "Mean Pulse Rate Under Stress" = mean(`pulse rate under stress`)) %>%
   kbl(caption = "<b>At Rest and Under Stress Mean Values for Academic Performance and Stress Variables with Placebo or Probiotic Treatment</b>", align = "c") %>%
-  kable_styling(full_width = FALSE, font_size = 14) %>% 
+  kable_styling(full_width = FALSE, font_size = 14, latex_options = "hold_position") %>% 
   kable_classic(full_width = F, html_font = "Times New Roman") %>%
   row_spec(0, bold = TRUE)
 ```
+
+
+``` {r descriptive-analysis-scores}
+# Install and load packages
+library(tidyverse)
+library(lme4)
+library(psych)
+library(stats)
+library(scales)
+
+# Descriptive Analysis
+# Looking at pre-exam and final exam scores for placebo and probiotic groups
+library(tidyverse)
+
+# Create dataset with selected variables - 
+score.da <- probiotics.stress.data %>%
+  gather(key = "exam type", value = "scores",
+         `pre-exam score`, `exam score`) %>%
+  select(`group`, `exam type`, `scores`)
+
+score.da %>% # Want to display exam types for both placebo and probiotic groups, and show the summarized descriptive analysis
+  group_by(`exam type`, `group`) %>% # Unsure how to change the order of exam type in the analysis - want pre-exam scores before exam scores
+  summarize(mean = mean(scores),
+            median = median(scores),
+            sd = sd(scores),
+            range = diff(range(scores)))
+```
+
+
+``` {r hypothesis-testing-analysis-scores-ttest}
+# Install and load packages
+library(tidyverse)
+library(lme4)
+library(psych)
+library(stats)
+library(scales)
+
+# Hypothesis Testing Analysis
+# Null hypothesis: There is no difference in exam scores between the placebo and probioitic group.
+# Alternative hypothesis: The probiotic group increases exam scores compared to the placebo group.
+
+# Create dataset with selected variables - mainly group and exam score
+score.hta <- probiotics.stress.data %>%
+  select(`participant code`, `group`, `exam score`)
+
+# Run t-test
+ttest2_overall <- t.test(
+  filter(score.hta, `group` == "placebo")$`exam score`,
+  filter(score.hta, `group` == "saccharomyces boulardii (probiotic)")$`exam score`
+)
+ttest2_overall
+# Not enough statistical significance between the two groups - will be accepting the null hypothesis
+# p-value = 0.2312 not significant
+```
+
 
 ``` {r mockup-plot1and2}
 # Mock-up plots sketched by hand
@@ -262,7 +319,7 @@ Hypothesized Results
 
 Appropriate Tests:
 Correlation analysis with line of best fit
-  - Examine the relationship between cortisol levels and pulse rate at rest and under stress within each           treatment group.
+  - Examine the relationship between cortisol levels and pulse rate at rest and under stress within each treatment group.
 
 
 
@@ -273,7 +330,7 @@ consuming placebo or probiotics.
 
 Alternative Hypothesis: There is a decrease in cortisol levels and increase in exam scores when participants consume probiotics.
 
-Indepdent Variables: Cortisol Levels or Exam Scores
+Independent Variables: Cortisol Levels or Exam Scores
 Dependent Variables: Group (Placebo or Probiotic)
 
 Hypothesized Results:
@@ -282,8 +339,7 @@ Hypothesized Results:
 
 Appropriate Tests:
 t-test
-  - Compare the stress levels at rest and under stress for both treatment groups and see if there are any 
-    changes.
+  - Compare the stress levels at rest and under stress for both treatment groups and see if there are any changes.
 -->
 
 
