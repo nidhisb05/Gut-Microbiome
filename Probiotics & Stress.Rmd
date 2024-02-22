@@ -8,21 +8,9 @@ author:
     corresponding : yes    # Define only one corresponding author
     address       : "Postal address"
     email         : "my@email.com"
-    role: # Contributorship roles (e.g., CRediT, https://credit.niso.org/)
-      - "Conceptualization"
-      - "Writing - Original Draft Preparation"
-      - "Writing - Review & Editing"
-  - name          : "Ernst-August Doelle"
-    affiliation   : "1,2"
-    role:
-      - "Writing - Review & Editing"
-      - "Supervision"
-
 affiliation:
   - id            : "1"
-    institution   : "Wilhelm-Wundt-University"
-  - id            : "2"
-    institution   : "Konstanz Business School"
+    institution   : "University of Chicago"
 
 authornote: |
   Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
@@ -60,7 +48,7 @@ output            : papaja::apa6_pdf
 
 ```{r setup, include = FALSE}
 library("papaja")
-source("A2-Package loading and assigning variables.R",local=knitr::knit_global())
+r_refs("r-references.bib")
 ```
 
 ```{r helloworld,include=TRUE}
@@ -75,7 +63,6 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 
 
 ```{r final-dataset}
-
 # Dataset Prep
 
 # Dataset read-in - install and load required packages (tidyverse and readxl)
@@ -347,40 +334,19 @@ ttest2_overall
 # p-value = 0.2312 not significant
 ```
 
-
-``` {r mockup-plot1and2}
-# Mock-up plots sketched by hand
-# Need figure out which style of plot to use and make sure all the axes have proper descriptions/measures
-knitr::include_graphics("Probiotics-Stress-Plots.jpg")
-```
-
 # Introduction
-As seen in Figure\ \@ref(fig:plot1-pre-and-exam-scores) the pre-exam and exam scores for individuals consuming placebo or probiotics.
 
-As seen in Figure\ \@ref(fig:plot2-cortisol-and-pulserate) the cortisol levels and pulse rates at rest and under stress for the placebo or probiotic groups.
+Probiotics from Lactobacillus and Bifidobacterium bacterial strains have shown capability to reduce anxiety. [@probioticbacteria] 
 
-As seen in Table\ \@ref(tab:table1-summary-and-mean-values) the summary mean values of academic performance and stress variables for both placebo and probiotic treatment groups.
+Saccharomyces boulardii is a probiotic yeast that is from the same genus as Saccharomyces cerevisiae, otherwise known as baker's yeast. [@probioticinfo] Saccharomyces boulardii has unique properties in terms of its optimal growth temperature, genome variations, and  mechanisms of action which make it a unique and viable probiotic. [@probioticproperties; @probioticinfo] 
+
+This paper aimed to analyze a dataset regarding the effect of Saccharomyces boulardii supplementation on academic performance and stress levels in healthy medical students. [@datasetstudy]
+
+Cortisol is a steroid hormone found in the blood, urine, and saliva, and is a common biomarker used to measure physiological stress. [@cortisolmarker] During this study salivary cortisol levels were measured through  the collection of non-invasive saliva samples.
 
 ## Hypothesis
 
 ### Definitions
-
-# In-line references:
-# Methods - Count of Placebo and Probiotic participants in the dataset
-This study included `r nrow(filter(probiotics.stress.data, group == "placebo"))` healthy medical students in the Placebo group, and `r nrow(filter(probiotics.stress.data, group == "saccharomyces boulardii (probiotic)"))` healthy medical students in the Saccharomyces boulardii (Probiotic) group.
-
-# Results - Reference the p-value for analysis
-The salivary cortisol levels "at rest" and "under stress" were measured for the placebo and probiotic groups. The p-value of `r ttest_placebo_probiotic_cortisol$p.value`, showed that the difference in the "at rest" and "under stress" salivary cortisol levels in the placebo and probiotic groups is not statistically significant. Therefore, the null hypothesis cannot be rejected.
-
-# Count the number of participant IDs that are outliers. 
-Defining an outlier as 2.5 * inter quartile range, the number of outliers present during the salivary cortisol under stress condition is ` r nrow(filter(probiotics.stress.data, `cortisol under stress` > 2.5*IQR(probiotics.stress.data$`cortisol under stress`)))`.
-
-# Mean cortisol level for placebo and probiotic samples in the dataset
-The mean salivary cortisol level for the placebo group was ` r round(mean(filter(probiotics.stress.data, group == "placebo")$`cortisol under stress`), 3)`[ng/mL], and for the probiotic group was ` r round(mean(filter(probiotics.stress.data, group == "saccharomyces boulardii (probiotic)")$`cortisol under stress`), 3)`[ng/mL]. However, after excluding the outliers in both groups, the mean salivary cortisol level for the placebo group was `r round(mean(filter(probiotics.stress.data, group == "placebo" | `cortisol under stress` < 2.5 * IQR(`cortisol under stress`))$`cortisol under stress`))` [ng/mL], and for the probiotic group was `r round(mean(filter(probiotics.stress.data, group == "saccharomyces boulardii (probiotic)" | `cortisol under stress` < 2.5 * IQR(`cortisol under stress`))$`cortisol under stress`))` [ng/mL].
-
-# Results - Plot Histogram
-The salivary cortisol levels data shows a right skew, as exhibited by `r hist(probiotics.stress.data$`cortisol under stress`, freq = FALSE, main = "Normal Distribution", xlab = "cortisol under stress", ylab = "Density")`. To make it a normal distribution of values before performing the statistical analysis, we need to log the values.
-
 
 ## Participants
 **Healthy Medical Students**
@@ -398,18 +364,29 @@ Probiotic used is _Saccharomyces Boulardii_
 - Measurement 2
 - Measurement 3
 
-Measuring the salivary cortisol levels ~~in the body~~
-
 ### Ordered List:
 1. Step 1
 2. Step 2
 3. Step 3
 
+# Results
+
+# In-line references:
+# Methods - Count of Placebo and Probiotic participants in the dataset
+This study included `r nrow(filter(probiotics.stress.data, group == "placebo"))` healthy medical students in the Placebo group, and `r nrow(filter(probiotics.stress.data, group == "saccharomyces boulardii (probiotic)"))` healthy medical students in the Saccharomyces boulardii (Probiotic) group.
+
+# Results - Reference the p-value for analysis
+The salivary cortisol levels "at rest" and "under stress" were measured for the placebo and probiotic groups. The p-value of `r ttest_placebo_probiotic_cortisol$p.value`, showed that the difference in the "at rest" and "under stress" salivary cortisol levels in the placebo and probiotic groups is not statistically significant. Therefore, the null hypothesis cannot be rejected.
+
+# Count the number of participant IDs that are outliers. 
+Defining an outlier as 2.5 * inter quartile range, the number of outliers present during the salivary cortisol under stress condition is `r nrow(filter(probiotics.stress.data, probiotics.stress.data[["cortisol under stress"]] > 2.5 * IQR(probiotics.stress.data[["cortisol under stress"]])))`
+
+# Results - Plot Histogram
+The salivary cortisol levels data shows a right skew, as exhibited by `r hist(probiotics.stress.data[["cortisol under stress"]], freq = FALSE, main = "Normal Distribution", xlab = "cortisol under stress", ylab = "Density")`. To make it a normal distribution of values before performing the statistical analysis, we need to log the values.
+
+
 ## Data analysis
 We used `r cite_r("r-references.bib")` for all our analyses.
-
-
-# Results
 
 # Discussion
 
