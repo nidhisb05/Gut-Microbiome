@@ -49,16 +49,19 @@ output            : papaja::apa6_pdf
 ```{r setup, include = FALSE}
 library("papaja")
 r_refs("r-references.bib")
-```
 
-```{r helloworld,include=TRUE}
-source("HelloWorld Function.R", local=knitr::knit_global())
-```
-
-```{r analysis-preferences}
-# Seed for random number generation
-set.seed(42)
-knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+library(tidyverse)
+library(readxl)
+library(knitr)
+library(kableExtra)
+library(lme4)
+library(psych)
+library(stats)
+library(scales)
+library(usethis)
+library(ggh4x)
+library(devtools)
+devtools::install_github("crsh/citr")
 ```
 
 
@@ -66,8 +69,6 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 # Dataset Prep
 
 # Dataset read-in - install and load required packages (tidyverse and readxl)
-library(tidyverse)
-library(readxl)
 read_excel("Probiotics-Academic-Stress.xlsx")
 
 # Name the dataset
@@ -76,8 +77,8 @@ colnames(probiotics.dataset) <- tolower(colnames(probiotics.dataset)) # Change a
 
 # Use dplyr functions to further select, filter and arrange dataset
 # Display only the variables required
-probiotics.stress.data <- probiotics.dataset |>
-  filter(`drop-out`== 0) |>
+probiotics.stress.data <- probiotics.dataset %>% 
+  filter(`drop-out`== 0) %>% 
   rename(
     "group" = "group (enrolment)",
     "age" = "age [years]",
@@ -89,31 +90,53 @@ probiotics.stress.data <- probiotics.dataset |>
     "cortisol at rest" = "salivary cortisol \"at rest\" [ng/ml]",
     "cortisol under stress" = "salivary cortisol \"under stress\" [ng/ml]",
     "pulse rate at rest" = "pulse rate \"at rest\" [min-1]",
-    "pulse rate under stress" = "pulse rate \"under stress\" [min-1]") |>
-  mutate(`group`= recode(`group`, "P" = "placebo", "S" = "saccharomyces boulardii (probiotic)")) |>
-  select(`participant code`, `group`, sex, `age`, `pss-10`, `stai trait`, `final exam score`, `exam set`, `pre-exam score`, `anxiety at rest`, `anxiety under stress`, `cortisol at rest`, `cortisol under stress`, `pulse rate at rest`, `pulse rate under stress`) |>
+    "pulse rate under stress" = "pulse rate \"under stress\" [min-1]") %>% 
+  mutate(`group`= recode(`group`, "P" = "placebo", "S" = "saccharomyces boulardii (probiotic)")) %>% 
+  select(`participant code`, `group`, sex, `age`, `pss-10`, `stai trait`, `final exam score`, `exam set`, `pre-exam score`, `anxiety at rest`, `anxiety under stress`, `cortisol at rest`, `cortisol under stress`, `pulse rate at rest`, `pulse rate under stress`) %>% 
   arrange(`group`, `participant code`)
 
-write_csv(probiotics.stress.data, file =  "final-probiotics-stress-data.csv")
-
-print(probiotics.stress.data)
+probiotics.stress.data
 ```
+
+# Introduction
+Memory processes are affected by an individual’s experiences, and stress has both positive and negative impacts on memory functioning [@Sandi-memoryimpair, ch. 12]. Buchanan et al., [-@Buchanan-impairedmemory] highglighted that each individual has a unique response and coping mechanism to stressful events, contributing to different effects of stress on memory. Medical students face stressful challenges from the start to the end of their medical journey, and this can impair cognitive ability [@Kar-examstress; @Dyrbye-medstudents]. These students undergo high-stake examinations contributing to performance anxiety [@Dyrbye-medstudents] and increased feelings of stress as the examination day occurs [@Kato-probioticbenefits]. While these stressors can impact academic performance, they may have detrimental effects on cognitive functioning, physiological, and psychological well-being of students. Therefore, it is necessary to identify a variety of effective techniques for stress management whether its mechanism works through improving one’s physical health, emotional functioning, or internally through the gut microbiota [@Worthen-stressmanage]. 
+
+The gut-brain-axis (GBA) highlights the presence of bidirectional communication between the enteric nervous system (ENS) and the central nervous system (CNS) [@Kim-improvedprobioticeffects; @Harvard-probiotics]. With the gut having the ability to modulate brain functioning, targeting the gut microbiome to improve cognition and alleviate stress through probiotic supplementation has been investigated in recent years. Probiotics are strains of live microorganisms that can have beneficial effects on the gut microbiota and are “generally recognized as safe” by the Food and Drug Administration [@Kato-probioticbenefits; @Liu-probioticsdef, p.14; @CCEC-probioticbenefits; @Wauters-probioticbacteria]. Bacterial probiotics are more widely utilized and commonly investigated under research conditions. Probiotic bacterial strains - *Bifidobacterium longum* and *Lactobacillus casei* strain Shirota - have demonstrated health-promoting effects associated with cognitive impairment, academic performance, stress, anxiety and depression [@Kim-improvedprobioticeffects; @Kato-probioticbenefits; @Papalini-stressmatters] in animal and human studies. 
+
+Bacterial and yeast probiotics have unique biological properties, making it difficult to generalize the results obtained from bacterial probiotics to yeast probiotics [@Goplan-probioticproperties; @Pais-probioticinfo]. Saccharomyces boulardii is a yeast probiotic treatment used for gastrointestinal disorders [@Roysarkar-yeastprobioticeffect], and its effects on stress, cognition, academic performance, anxiety and depression are yet to be determined. *S. boulardii* is from the same genus as *Saccharomyces cerevisiae*, otherwise known as baker’s yeast [@Pais-probioticinfo]. This paper aimed to analyze the dataset provided by the study conducted by @Karbownik-datasetstudy examining the effects of *S. boulardii* supplementation on academic performance and stress markers in healthy medical students.
+
+## Hypothesis
+
+### Definitions
+
+## Participants
+**Healthy Medical Students**
+
+## Material
+Probiotic used is _Saccharomyces Boulardii_
+
+<!-- Example of HTML-style comment -->
+
+[Visit RCT Study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7284642/)
+
+## Procedure
+### Unordered List:
+- Measurement 1
+- Measurement 2
+- Measurement 3
+
+Cortisol is a steroid hormone found in the blood, urine, and saliva, and is a common biomarker used to measure physiological stress [@Iqbal-cortisolmarker]. During this study salivary cortisol levels were measured through  the collection of non-invasive saliva samples.
+
+
+### Ordered List:
+1. Step 1
+2. Step 2
+3. Step 3
+
 
 
 ``` {r plot1-pre-and-exam-scores, fig.cap="Pre-Exam and Exam Scores with Placebo or Probiotic Treatment"}
 
-  # Plot 1 will display the pre-examination and examination scores for participants in both groups
-  # X Axis = Placebo or Probiotic, Y Axis = Score
-  # Displayed as either a box/distribution plot OR a bar chart
-  # Bar chart will not show individual variation - box/distribution plot may work better
-  # Comparing pre-examination and examination for the two treatment groups
-  # Hypothesis - Pre-examination scores for both groups will be similar, treatment with probiotic could result in better examination scores compared to the placebo group
-
-# Boxplot - divided by categories = examination score and treatment groups
-# Group by treatments first
-# Shape does not work for dot plots - only box plot
-
-library(tidyverse)
 # Creates plot1 long data
 plot1_data <- gather(probiotics.stress.data, key = "exam_score_type", value = "score", `final exam score`, `pre-exam score`)
 
@@ -153,6 +176,7 @@ plot1_columns %>%
     legend.position = "bottom",
     legend.text = element_text(size = 9),
     legend.title = element_text(face = "bold", size = 10),
+    strip.background = element_rect(fill = "white"),
     strip.text = element_text(face = "bold", size = 8, color = "black"),
     panel.border = element_rect(color = "black", fill = NA),
     legend.key = element_rect(fill = 'white'))
@@ -160,50 +184,45 @@ plot1_columns %>%
 
 
 ``` {r plot2-cortisol-and-pulserate, fig.cap="Cortisol and Pulse Rate Changes At Rest and Under Stress with Placebo or Probiotic Treatment."}
-# Plot 2 will display the salivary cortisol levels vs. pulse rates - continuous variable against a continuous variable
-# X Axis = Salivary Cortisol levels, Y Axis = Pulse Rates
-# Displayed as a scatter plot with a smooth or dashed line to show the correlation
-# Will need to compare groups (use different symbols, colors, and lines) - at-rest and under-stress levels for both treatment groups (placebo or probiotic)
-# Hypothesis - Salivary cortisol levels will increase with an increase in pulse rate, treatment with probiotic could result in a lower salivary cortisol rate and have an effect on stress
-
-library(tidyverse)
 plot2_longdata <- probiotics.stress.data %>%
   gather(key = "at rest or under stress", value = "cortisol",
-           `cortisol at rest`, `cortisol under stress`) %>%
+         `cortisol at rest`, `cortisol under stress`) %>%
   gather(key = "at rest or under stress", value = "pulse rate",
-       `pulse rate at rest`, `pulse rate under stress`)
-        
+         `pulse rate at rest`, `pulse rate under stress`)
+
 plot2_columns <- plot2_longdata %>%
   select('participant code', 'group', 'cortisol', 'at rest or under stress', 'pulse rate') %>%
   mutate(`group` = replace(`group`, `group` == "placebo", "Placebo")) %>%
   mutate(`group` = replace(`group`, `group` == "saccharomyces boulardii (probiotic)", "Saccharomyces boulardii (Probiotic)")) %>%
   mutate(`at rest or under stress` = gsub("pulse rate at rest", "at rest", `at rest or under stress`)) %>%
   mutate(`at rest or under stress` = gsub("pulse rate under stress", "under stress", `at rest or under stress`))
-  
+
+strip_colors <-strip_themed(background_x = elem_list_rect(fill = c("#ffdbff", "#afffff")))
+
+
 plot2_columns %>%
-  filter(!(cortisol > 7.5)) %>%
-  ggplot(aes(x = `cortisol`, y = `pulse rate`, shape = `group`, color = `group`)) +
+  #filter(!(cortisol > 7.5)) %>%
+  ggplot(aes(x = `cortisol`, y = `pulse rate`, shape = `at rest or under stress`, color = `at rest or under stress`)) +
   geom_point() +
   scale_color_manual(values=c("#469B79", "#5D33A7")) +
-  coord_cartesian(xlim = c(0,7.5), ylim = c(40,130)) +
-  facet_wrap(~ `at rest or under stress`) +
+  #coord_cartesian(xlim = c(0,7.5), ylim = c(40,130)) +
+  facet_wrap2(~ `group`, scales = "free", strip = strip_colors) +
   geom_smooth(method = "lm", se = FALSE) +
   labs(title = "Salivary Cortisol vs. Pulse Rate of Healthy Medical Students",
-      subtitle = "At Rest and Under Stress Changes in the Placebo and Probiotic Groups",
-      x = "Salivary Cortisol [ng/mL]",
-      y = "Pulse Rate [min-1]",
-      shape = "Group",
-      color = "Group") +
+       subtitle = "At Rest and Under Stress Changes in the Placebo and Probiotic Groups",
+       x = "Salivary Cortisol [ng/mL]",
+       y = "Pulse Rate [min-1]",
+       shape = "Group",
+       color = "Group") +
   theme_bw() +
   theme(
-    plot.title = element_text(size = 12),
+    plot.title = element_text(face = "bold", size = 12),
     plot.subtitle = element_text(size = 10),
     axis.title = element_text(size = 10),
     legend.background = element_rect(color = "black", fill = "white"),
     legend.text = element_text(size = 10),
     legend.title = element_text(size = 12),
-    strip.background = element_rect(fill = "#872E51"),
-    strip.text = element_text(size = 8, color = "white"),
+    strip.text = element_text(face = "bold", size = 8, color = "black"),
     panel.border = element_rect(color = "black", fill = NA),
     legend.key = element_rect(fill = 'white'),
     axis.text.x = element_text(size = 8),
@@ -211,18 +230,11 @@ plot2_columns %>%
 ```
 
 
-``` {r table1-summary-and-mean-values, table.cap="Summary of Mean Academic Performance and Stress Variable Changes At Rest or Under Stress with Placebo or Probiotic Treatment"}
-
-# Install and load packages
-library(knitr)
-library(kableExtra)
-
+``` {r table1-mean-summary, table.cap="Summary of Mean Academic Performance and Stress Variable Changes At Rest or Under Stress with Placebo or Probiotic Treatment"}
 # Create dataset to convert into a table
 table_columns <- probiotics.stress.data[, c("participant code", "group", "anxiety at rest", "anxiety under stress", "pre-exam score", "final exam score", "cortisol at rest", "cortisol under stress", "pulse rate at rest", "pulse rate under stress")]
 
-# Created table summarizing mean values of all academic performance and stress variables
-# Style modifications: bold caption, bold headers, center-aligned all values, and changed the font
-table_columns %>%
+summary_table <- table_columns %>%
   group_by(group) %>% # Was unable to bold the "group" column, will need to modify the dataset
   summarize("Mean Anxiety At Rest" = mean(`anxiety at rest`),
             "Mean Anxiety Under Stress" = mean(`anxiety under stress`),
@@ -232,10 +244,129 @@ table_columns %>%
             "Mean Coritsol Under Stress" = mean(`cortisol under stress`),
             "Mean Pulse Rate At Rest" = mean(`pulse rate at rest`),
             "Mean Pulse Rate Under Stress" = mean(`pulse rate under stress`)) %>%
-  kbl(caption = "<b>At Rest and Under Stress Mean Values for Academic Performance and Stress Variables with Placebo or Probiotic Treatment</b>", align = "c") %>%
-  kable_styling(full_width = FALSE, font_size = 14, latex_options = "hold_position") %>% 
+  pivot_longer(cols = -group, names_to = "Variable", values_to = "Mean") %>%
+  pivot_wider(names_from = group, values_from = Mean)
+
+colnames(summary_table) <- c("Variable", "Placebo", "Saccharomyces boulardii (Probiotic)")
+
+summary_table %>%
+  kbl(caption = "At Rest and Under Stress Mean Values for Academic Performance and Stress Variables with Placebo or Probiotic Treatment", align = "c") %>%
+  kable_styling(full_width = FALSE, font_size = 14, latex_options = c("scale_down")) %>% 
   kable_classic(full_width = F, html_font = "Times New Roman") %>%
-  row_spec(0, bold = TRUE)
+  row_spec(0, bold = TRUE) %>%
+  column_spec(column = 1:3, border_left = TRUE, border_right = TRUE)
+```
+
+
+```{r anxiety-vs-groups}
+plot3_data <- probiotics.stress.data %>%
+  gather(key = "at rest or under stress", value = "anxiety",
+         `anxiety at rest`, `anxiety under stress`) %>%
+  select('participant code', 'group', 'anxiety', 'at rest or under stress') %>%
+  mutate(`group` = replace(`group`, `group` == "placebo", "Placebo")) %>%
+  mutate(`group` = replace(`group`, `group` == "saccharomyces boulardii (probiotic)", "Saccharomyces boulardii (Probiotic)")) %>%
+  mutate(`at rest or under stress` = gsub("anxiety at rest", "At Rest", `at rest or under stress`)) %>%
+  mutate(`at rest or under stress` = gsub("anxiety under stress", "Under Stress", `at rest or under stress`))
+
+strip_colors <-strip_themed(background_x = elem_list_rect(fill = c("#ffdbff", "#afffff")))
+
+plot3_data %>%
+  ggplot(aes(x = `at rest or under stress`, y = `anxiety`, shape = `at rest or under stress`, group = `participant code`)) +
+  geom_point() +
+  geom_line() +
+  facet_wrap2(~ `group`, scales = "free", strip = strip_colors) +
+  labs(title = "Anxiety Levels of Healthy Medical Students",
+       subtitle = "At Rest and Under Stress Changes in the Placebo and Probiotic Groups",
+       x = "",
+       y = "Anxiety Level",
+       shape = "Condition") +
+  theme_bw() +
+  theme(
+    plot.title = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(size = 10),
+    axis.title = element_text(size = 10),
+    legend.background = element_rect(color = "black", fill = "white"),
+    legend.text = element_text(size = 10),
+    legend.title = element_text(size = 12),
+    strip.text = element_text(face = "bold", size = 8, color = "black"),
+    legend.key = element_rect(fill = 'white'),
+    axis.text.x = element_text(size = 8),
+    axis.text.y = element_text(size = 8))
+```
+``` {r plot4-cortisol-vs-groups}
+
+plot4_data <- probiotics.stress.data %>%
+  gather(key = "at rest or under stress", value = "cortisol",
+         `cortisol at rest`, `cortisol under stress`) %>%
+  select('participant code', 'group', 'cortisol', 'at rest or under stress') %>%
+  mutate(`group` = replace(`group`, `group` == "placebo", "Placebo")) %>%
+  mutate(`group` = replace(`group`, `group` == "saccharomyces boulardii (probiotic)", "Saccharomyces boulardii (Probiotic)")) %>%
+  mutate(`at rest or under stress` = gsub("cortisol at rest", "At Rest", `at rest or under stress`)) %>%
+  mutate(`at rest or under stress` = gsub("cortisol under stress", "Under Stress", `at rest or under stress`))
+
+strip_colors <-strip_themed(background_x = elem_list_rect(fill = c("#ffdbff", "#afffff")))
+
+plot4_data %>%
+  filter(!(cortisol > 10)) %>%
+  ggplot(aes(x = `at rest or under stress`, y = `cortisol`, shape = `at rest or under stress`, group = `participant code`)) +
+  geom_point() +
+  geom_line() +
+  coord_cartesian(ylim = c(0,10)) +
+  facet_wrap2(~ `group`, scales = "free", strip = strip_colors) +
+  labs(title = "Salivary Cortisol Levels of Healthy Medical Students",
+       subtitle = "At Rest and Under Stress Changes in the Placebo and Probiotic Groups",
+       x = "",
+       y = "Cortisol Levels [ng/mL]",
+       shape = "Condition") +
+  theme_bw() +
+  theme(
+    plot.title = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(size = 10),
+    axis.title = element_text(size = 10),
+    legend.background = element_rect(color = "black", fill = "white"),
+    legend.text = element_text(size = 10),
+    legend.title = element_text(size = 12),
+    strip.text = element_text(face = "bold", size = 8, color = "black"),
+    legend.key = element_rect(fill = 'white'),
+    axis.text.x = element_text(size = 8),
+    axis.text.y = element_text(size = 8))
+```
+```{r plot5-pulserate-vs-groups}
+
+plot5_data <- probiotics.stress.data %>%
+  gather(key = "at rest or under stress", value = "pulse rate",
+         `pulse rate at rest`, `pulse rate under stress`) %>%
+  select('participant code', 'group', 'pulse rate', 'at rest or under stress') %>%
+  mutate(`group` = replace(`group`, `group` == "placebo", "Placebo")) %>%
+  mutate(`group` = replace(`group`, `group` == "saccharomyces boulardii (probiotic)", "Saccharomyces boulardii (Probiotic)")) %>%
+  mutate(`at rest or under stress` = gsub("pulse rate at rest", "At Rest", `at rest or under stress`)) %>%
+  mutate(`at rest or under stress` = gsub("pulse rate under stress", "Under Stress", `at rest or under stress`))
+
+strip_colors <-strip_themed(background_x = elem_list_rect(fill = c("#ffdbff", "#afffff")))
+
+plot5_data %>%
+  ggplot(aes(x = `at rest or under stress`, y = `pulse rate`, shape = `at rest or under stress`, group = `participant code`)) +
+  geom_point() +
+  geom_line() +
+  #coord_cartesian(ylim = c(45,135)) +
+  facet_wrap2(~ `group`, scales = "free", strip = strip_colors) +
+  labs(title = "Pulse Rate of Healthy Medical Students",
+       subtitle = "At Rest and Under Stress Changes in the Placebo and Probiotic Groups",
+       x = "",
+       y = "Pulse Rate [min-1]",
+       shape = "Condition") +
+  theme_bw() +
+  theme(
+    plot.title = element_text(face = "bold", size = 12),
+    plot.subtitle = element_text(size = 10),
+    axis.title = element_text(size = 10),
+    legend.background = element_rect(color = "black", fill = "white"),
+    legend.text = element_text(size = 10),
+    legend.title = element_text(size = 12),
+    strip.text = element_text(face = "bold", size = 8, color = "black"),
+    legend.key = element_rect(fill = 'white'),
+    axis.text.x = element_text(size = 8),
+    axis.text.y = element_text(size = 8))
 ```
 
 ``` {r hypothesis-testing-cortisol-values}
@@ -333,41 +464,6 @@ ttest2_overall
 # Not enough statistical significance between the two groups - will be accepting the null hypothesis
 # p-value = 0.2312 not significant
 ```
-
-# Introduction
-
-Probiotics from Lactobacillus and Bifidobacterium bacterial strains have shown capability to reduce anxiety. [@probioticbacteria] 
-
-Saccharomyces boulardii is a probiotic yeast that is from the same genus as Saccharomyces cerevisiae, otherwise known as baker's yeast. [@probioticinfo] Saccharomyces boulardii has unique properties in terms of its optimal growth temperature, genome variations, and  mechanisms of action which make it a unique and viable probiotic. [@probioticproperties; @probioticinfo] 
-
-This paper aimed to analyze a dataset regarding the effect of Saccharomyces boulardii supplementation on academic performance and stress levels in healthy medical students. [@datasetstudy]
-
-Cortisol is a steroid hormone found in the blood, urine, and saliva, and is a common biomarker used to measure physiological stress. [@cortisolmarker] During this study salivary cortisol levels were measured through  the collection of non-invasive saliva samples.
-
-## Hypothesis
-
-### Definitions
-
-## Participants
-**Healthy Medical Students**
-
-## Material
-Probiotic used is _Saccharomyces Boulardii_
-
-<!-- Example of HTML-style comment -->
-
-[Visit RCT Study](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7284642/)
-
-## Procedure
-### Unordered List:
-- Measurement 1
-- Measurement 2
-- Measurement 3
-
-### Ordered List:
-1. Step 1
-2. Step 2
-3. Step 3
 
 # Results
 
