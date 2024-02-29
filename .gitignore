@@ -33,6 +33,10 @@ docs/
 po/*~
 # RStudio Connect folder
 rsconnect/
+
+# helloworld function ignored
+HelloWorldFunction.R
+
 #Including a directory called localonly
 localonly/
 #Files of specific types that can be on the computer but not uploaded to GitHub
