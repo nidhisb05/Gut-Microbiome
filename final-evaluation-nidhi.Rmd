@@ -1,0 +1,267 @@
+---
+title: "final-evaluation-nidhi"
+output: html_document
+date: "2024-03-08"
+---
+
+# Assignment Info
+
+- **Student name:** Nidhi Sheshachala
+- **Project title:** Supplementation with Yeast Probiotic, *Saccharomyces Boulardii*, and its Effects on Academic Examination Performance and Stress Markers in Healthy Medical Students
+- **Submission date:** Mar 5 at 9:27pm
+
+## Report plan summary
+
+
+
+Specific plans for analysis, figure, and table chunks
+
+    The analysis will look at the effects of placebo or probiotic administration on academic performance through exam scores and stress levels
+    Figures
+        Treatment group vs. pre-exam and exam scores = Box Plot
+        Anxiety levels at rest and under stress for both treatment groups = Facet Scatter Plots
+        Salivary cortisol at rest and under stress for both treatment groups = Facet Scatter Plots
+        Pulse rate at rest and under stress for both treatment groups = Facet Scatter Plots
+        Salivary cortisol vs. pulse rate at rest and under stress for both treatment groups = Facet Scatter Plots, with a line of best fit
+    Table
+        Summary of mean values for each academic performance and stress variables for placebo and probiotic treatment
+
+General description of the distribution of 1500+ words
+
+    Introduction
+        Provide background information on the probiotic treatment: effects of probiotics on academic performance and stress levels from previous studies
+        Indication of what each stress variable means and why use it as a measure
+    Methods (shortest section)
+        Briefly describe the methods the authors used - participant enrolment, location of study, placebo or probiotic administration, and when each measure was collected.
+    Results
+        Description of what each plot and tablet displays - refer back to each one within the text
+    Discussion
+        Discuss the effects of probiotic administration on academic performance and stress levels
+        Acceptance of the null hypothesis or alternative hypothesis - the reasoning behind acceptance or rejection of either referring back to figures, table, and statistical analysis
+
+2 elements of code produced in code chunks
+
+    Descriptive analysis of academic exam performance and stress variables - p-value
+    Hypothesis testing analysis - correlation coefficient or Pearson’s r
+    Summary mean values calculated for academic performance and stress variables
+
+Personal goals for the final report
+
+    Learn how to complete accurate statistical analysis (both descriptive and hypothesis testing) for large datasets using the different data wrangling techniques and packages provided
+    Want to be comfortable using r markdown and referencing code chunks within the text
+
+# Assessment
+
+The lists of expectations in each category are to help you understand the kinds of things I'm looking for as I grade. These **do not** map onto point values. A checked box indicates the expectation was met or exceeded. (This also helps me spot patterns across students to identify ways I can improve the syllabus and lectures for future students.)
+
+Ratings indicate overall success for each category and loosely map onto points. Starting from 20 points, no points are lost for the highest rating, -3 for the lowest, and somewhere in between for the middle ratings. Points lost in that range are dependent on how many issues there are, how much they matter, whether it's technicality vs problem of consequence, whether it's the same core issue that lost you points in a different section, whether exceeding expectations elsewhere compensate for a small issue, whether it's something we talked about in your report plan meeting, etc. 
+
+Additional comments are included below the ratings as needed. Final project and class grades are included at the end of the document.
+
+**WARNING: Grades for this assignment are going to be lower than you expect!** Don't freak out. I use "specs-based grading", which works very differently from the letter-grade-to-percentage conversion you are probably used to. It's more like Harry Potter OWLs -- 19/20 is outstanding, 16-18 exceeds expectations (not a C!), 13-15 meets expectations (not an F!), etc. You're not down to T(roll) until you're in the negatives. Remember this is only 20% of your final grade!
+    
+## .Rmd/PDF match
+
+**Expectations:**
+
+- [x] PDF submitted to Canvas is identical to the PDF created when I knit your .Rmd
+- [x] Knitting does not produce any errors or problematic warnings
+
+**Rating:**
+
+- [x] Perfect match
+- [ ] At least one minor problem
+- [ ] At least one major problem and/or multiple minor problems
+- [ ] Multiple major problems
+- [ ] Prohibitive error(s), missing PDF, or significant problems
+
+*No additional comments*
+
+## Data read-in, prep, wrangling
+
+**Expectations:**
+
+- [x] Data preparation and wrangling code present (may separate files)
+- [x] Intermediate datasets (if used) are functional and read in successfully
+- [x] Raw or intermediate data read into .Rmd code chunk
+- [x] All code in .R files and .Rmd code chunks is sufficiently commented and comprehensible
+- [x] Additional expectations set in the report plan (if any) are met
+
+**Rating:**
+
+- [x] No noteworthy issues 
+- [ ] At least one minor problem
+- [ ] At least one major problem and/or multiple minor problems
+- [ ] Multiple major problems
+- [ ] Prohibitive errors or significant problems
+
+A little confusing that your data prep isn't in the file called data-prep.R, but I found it. Just an example of where tidy repo organization can be very helpful. :)
+
+## Figures, tables, analyses
+
+### Figures
+
+**Expectations:**
+
+- [x] At least 2 plots are produced in .Rmd chunks (not imported images)
+- [x] Figures are different kinds of plots 
+- [x] Figures follow report plan (may have inconsequential deviations)
+- [x] Figures are publication-quality
+- [x] Figures are sensibly captioned with `fig.cap` chunk option
+- [x] Figures are informative and interpretable
+- [x] All code in .R files and .Rmd code chunks is sufficiently commented and comprehensible
+- [x] Additional expectations set in the report plan (if any) are met
+
+**Rating:**
+
+- [x] No noteworthy issues 
+- [ ] At least one minor problem
+- [ ] At least one major problem and/or multiple minor problems
+- [ ] Multiple major problems
+- [ ] Prohibitive errors or significant problems
+
+These plots are excellent!!
+
+### Table
+
+**Expectations:** 
+
+If you included more than the one required table, only one needs to meet expectations.
+
+- [x] At least 1 table is produced in .Rmd chunk
+- [x] Table follows report plan (may have inconsequential deviations)
+- [x] Table is publication-quality
+- [x] Table is sensibly captioned within the function (e.g., the kable caption argument)
+- [ ] Table is informative and interpretable
+- [ ] All code in .R files and .Rmd code chunks is sufficiently commented and comprehensible
+- [x] Additional expectations set in the report plan (if any) are met
+
+**Rating:**
+
+- [ ] No noteworthy issues 
+- [x] At least one minor problem
+- [ ] At least one major problem and/or multiple minor problems
+- [ ] Multiple major problems
+- [ ] Prohibitive errors or significant problems
+
+Just FYI, the "caption" option in your table chunk is not an equivalent to the fig.cap option for figures. The way to include a caption is (like you've also done) using the caption argument in the kable function.
+
+Your table renders fine and looks nice (though repeating "mean" in each row is distracting), but it's not particularly informative. We talked in our planning about the possibility of needing to choose an alternative table to make if this was going to be minimally informative. I think you could actually do this with basically the info currently in your table (plus maybe standard error) by sort of "pivoting wide" with clever columns.
+
+### Analysis
+
+**Expectations:**
+
+If you included more than the one required analysis (or other requirements agreed on in the report plan), only one needs to meet expectations.
+
+- [x] At least 1 statistical analysis is executed in .Rmd chunk (or sourced code if appropriate)
+- [x] Analysis follows report plan (may have inconsequential deviations)
+- [x] Analysis is executed correctly
+- [x] Analysis is appropriate (not necessarily ideal) for data type(s) and research questions
+- [x] Analysis is referenced and interpreted in narrative text
+- [x] All code in .R files and .Rmd code chunks is sufficiently commented and comprehensible
+- [x] Additional expectations set in the report plan (if any) are met
+
+**Rating:**
+
+- [x] No noteworthy issues 
+- [ ] At least one minor problem
+- [ ] At least one major problem and/or multiple minor problems
+- [ ] Multiple major problems
+- [ ] Prohibitive errors or significant problems
+
+*No additional comments*
+
+## Manuscript
+
+### Narrative text
+
+**Expectations:**
+
+- [x] Narrative text includes 1500+ words distributed across 4 sections
+- [x] Sufficient literature review (per report plan)
+- [x] Sufficient methods section (per report plan)
+- [x] Sufficient results section (per report plan)
+- [x] Sufficient discussion (per report plan)
+- [x] Narrative provides sufficient context and interpretation for all figures, tables, and analyses
+- [x] Additional expectations set in the report plan (if any) are met
+
+**Rating:**
+
+- [x] No noteworthy issues 
+- [ ] At least one minor problem
+- [ ] At least one major problem and/or multiple minor problems
+- [ ] Multiple major problems
+- [ ] Prohibitive errors or significant problems
+
+*No additional comments*
+
+### Markdown
+
+**Expectations:**
+
+- [x] Figures and tables are successfully referenced with markdown syntax
+- [x] At least 2 in-text code references
+- [x] At least 1 in-text code reference includes in-text function
+- [ ] R Markdown is used effectively to follow APA format (e.g., headings, emphasized text)
+- [x] YAML header is functional and complete
+- [x] Additional expectations set in the report plan (if any) are met
+
+**Rating:**
+
+- [ ] No noteworthy issues 
+- [x] At least one minor problem
+- [ ] At least one major problem and/or multiple minor problems
+- [ ] Multiple major problems
+- [ ] Prohibitive errors or significant problems
+
+Running head must be less than 50 characters; chunk output of tibble is rendered on page 7, chunk options should prevent this; a couple places where you need to correct numeric rounding display
+
+### BibTeX
+
+**Expectations:**
+
+- [x] At least 10 in-text citations using BibTeX reference syntax
+- [x] In-text citations are rendered without errors
+- [x] In-text citations have no obvious problems (e.g., incorrect special characters)
+- [ ] R and R packages are cited in-text using `cite_r()`
+- [x] References page renders without errors
+- [x] References page is APA formatted and free of obvious problems
+- [x] Additional expectations set in the report plan (if any) are met
+
+**Rating:**
+
+- [ ] No noteworthy issues 
+- [ ] At least one minor problem
+- [x] At least one major problem and/or multiple minor problems
+- [ ] Multiple major problems
+- [ ] Prohibitive errors or significant problems
+
+Missing R & package citations in-text and in references list
+
+## GitHub & best practices
+
+These expectations will not have an impact on your grade unless there are egregious issues, but I include them to give you feedback on what you can do if you use this workflow going forward.
+
+**Expectations:**
+
+- [x] GitHub repo and contained files are sensibly and informatively named
+- [x] GitHub repo is well-structured and tidy
+- [x] GitHub README.md file is informative
+- [x] Commit messages are informative
+- [x] Style is (relatively) consistent
+- [x] Comments are frequent and informative
+- [x] Code chunks have informative names, follow 1-chunk-1-thing rule, and are distributed throughout the text
+
+only comment here is that you could go even farther adhering to the 1-chunk-1-thing rule
+
+## Overall
+
+Really great work, Nidhi! A couple minor things here and there, but overall it's evident that you know how to make good use of all the skills we've covered this quarter.
+
+# Grade
+
+- **Final report grade:** 16
+- **Class participation grade:** 19
+- **Weekly assignments:** 60
+- **TOTAL Final course grade:** 95 (A)
